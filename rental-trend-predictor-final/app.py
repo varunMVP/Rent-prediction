@@ -2,77 +2,66 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.linear_model import LinearRegression
+from model import preprocess, model
 from sklearn.metrics import mean_squared_error, r2_score
 
-# Load the dataset
-df = pd.read_csv("rent_prices.csv")  # Ensure CSV file is in the root directory
+# Set page configuration
+st.set_page_config(page_title="Rental Trend Predictor", layout="wide")
 
-# Check the columns of the dataframe
-st.write(f"Columns in DataFrame: {df.columns}")
+# Navigation - basic tabs
+tab1, tab2, tab3 = st.tabs(["📊 Prediction", "📈 Visualization", "📋 Evaluation"])
 
-# Data preprocessing and visualization
-def preprocess_data(df):
-    # Ensure 'Month' column is in datetime format
-    df['Month'] = pd.to_datetime(df['Month'], format='%Y-%m')
+# Load built-in dataset from root
+df = pd.read_csv("rent_prices.csv")
 
-    # Extract the month and year as separate columns for regression
-    df['Year'] = df['Month'].dt.year
-    df['Month_num'] = df['Month'].dt.month
+# Data Preprocessing
+processed_df, X, y = preprocess.prepare_data(df)
 
-    return df
+# Train the Model
+reg_model = model.train_model(X, y)
 
-# Linear Regression Model to Predict Rent
-def predict_rent(df):
-    # Extract the features and target variable
-    X = df[['Year', 'Month_num']]
-    y = df['AvgRent']  # Using 'AvgRent' instead of 'Average_Rent'
+# Predict next month's rent
+next_month = model.predict_next_month(reg_model, X)
 
-    # Train the model
-    model = LinearRegression()
-    model.fit(X, y)
+# Predictions for model evaluation
+y_pred = reg_model.predict(X)
 
-    # Predict next month's rent
-    next_month = pd.to_datetime(df['Month'].max()) + pd.DateOffset(months=1)
-    next_month_features = pd.DataFrame({
-        'Year': [next_month.year],
-        'Month_num': [next_month.month]
-    })
+# Tab 1: Prediction Output
+with tab1:
+    st.title("🏠 Rental Trend Predictor")
+    st.write("Using historical rent data to predict next month's average rent.")
+    st.dataframe(df.head(10))
+    st.success(f"📌 Predicted Next Month's Average Rent: **${next_month:.2f}**")
 
-    next_month_rent = model.predict(next_month_features)[0]
-    return next_month_rent
+# Tab 2: Visualization
+with tab2:
+    st.title("📈 Rent Trends Visualization")
+    
+    # Convert 'Month' to datetime if not already done
+    processed_df['Month'] = pd.to_datetime(processed_df['Month'])
+    
+    # Create the plot
+    fig, ax = plt.subplots(figsize=(10, 5))
+    sns.lineplot(data=processed_df, x="Month", y="AvgRent", hue="City", marker="o", ax=ax)
+    ax.set_title("Average Rent Over Time by City")
+    ax.set_xlabel("Month")
+    ax.set_ylabel("Average Rent ($)")
+    st.pyplot(fig)
 
-# Process the data
-processed_df = preprocess_data(df)
-
-# Predict the next month's rent
-predicted_rent = predict_rent(processed_df)
-
-# Display the predicted rent for next month
-st.write(f"Predicted average rent for next month: ${predicted_rent:.2f}")
-
-# Model Evaluation
-X = processed_df[['Year', 'Month_num']]
-y = processed_df['AvgRent']  # Using 'AvgRent' here as well
-model = LinearRegression()
-model.fit(X, y)
-
-# Predictions
-y_pred = model.predict(X)
-
-# Model Evaluation Metrics
-mse = mean_squared_error(y, y_pred)
-r2 = r2_score(y, y_pred)
-
-st.write(f"Model Evaluation Metrics:")
-st.write(f"Mean Squared Error: {mse:.2f}")
-st.write(f"R² Score: {r2:.2f}")
-
-# Plot the trends using Seaborn
-plt.figure(figsize=(10, 6))
-sns.lineplot(x=processed_df['Month'], y=processed_df['AvgRent'])
-plt.title("Rent Price Trend Over Time")
-plt.xlabel("Month")
-plt.ylabel("Average Rent")
-plt.xticks(rotation=45)
-st.pyplot(plt)
+# Tab 3: Model Evaluation
+with tab3:
+    st.title("📋 Model Evaluation Metrics")
+    mse = mean_squared_error(y, y_pred)
+    r2 = r2_score(y, y_pred)
+    st.write(f"🔹 **Mean Squared Error (MSE):** {mse:.2f}")
+    st.write(f"🔹 **R² Score:** {r2:.4f}")
+    
+    # Plot Actual vs Predicted Rent values
+    eval_fig, eval_ax = plt.subplots(figsize=(10, 5))
+    eval_ax.plot(processed_df['Month'], y, label='Actual Rent', color='blue', marker='o')
+    eval_ax.plot(processed_df['Month'], y_pred, label='Predicted Rent', color='orange', linestyle='--', marker='x')
+    eval_ax.set_title("Actual vs Predicted Rent")
+    eval_ax.set_xlabel("Month")
+    eval_ax.set_ylabel("Average Rent ($)")
+    eval_ax.legend()
+    st.pyplot(eval_fig)
