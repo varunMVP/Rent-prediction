@@ -57,7 +57,7 @@ The app is structured with three interactive tabs:
 > You can upload screenshots in your repository and embed them like this:
 
 ### 🖼️ Prediction Tab
-![Prediction Screenshot](screenshots/prediction_tab.png)
+![Image](https://github.com/user-attachments/assets/fb4853c4-1a12-48f6-b25c-62bb4cb48b1f)
 
 ### 📈 Visualization Tab
 ![Visualization Screenshot](screenshots/visualization_tab.png)
