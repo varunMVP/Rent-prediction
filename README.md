@@ -93,17 +93,18 @@ This project demonstrates how **data-driven insights** can be transformed into a
 ## 📦 Project Structure
 
 ├── app.py # Main Streamlit app
+
 ├── rent_prices.csv # Rental dataset
+
 ├── model/
+
 │ ├── model.py # ML model logic
+
 │ └── preprocess.py # Data preprocessing
-├── screenshots/ # UI screenshots (add here)
+
+
 └── README.md # You are here!
 
 ---
 
-## 🙌 Credits
 
-This project was developed as part of a real-world application to demonstrate **predictive analytics in rental housing markets** using accessible technologies.
-
-Feel free to fork, extend, or contribute!
