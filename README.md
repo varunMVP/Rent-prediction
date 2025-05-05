@@ -60,17 +60,12 @@ The app is structured with three interactive tabs:
 ![Image](https://github.com/user-attachments/assets/fb4853c4-1a12-48f6-b25c-62bb4cb48b1f)
 
 ### 📈 Visualization Tab
-![Visualization Screenshot](screenshots/visualization_tab.png)
+![Image](https://github.com/user-attachments/assets/dea1f742-02ab-42a5-acf8-5e95c48cff76)
 
 ### 📋 Evaluation Tab
-![Evaluation Screenshot](screenshots/evaluation_tab.png)
+![Image](https://github.com/user-attachments/assets/80f23f91-1c3b-4fe5-a27e-367afbc4b17f)
 
-> ✅ To add your own:
-1. Take a screenshot using your OS tools.
-2. Save it inside a `screenshots/` folder in your GitHub project.
-3. Use `![Alt Text](screenshots/filename.png)` in the README.
 
----
 
 ## 🎯 Why It Matters
 
