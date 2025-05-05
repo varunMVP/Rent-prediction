@@ -14,7 +14,7 @@ st.write(f"Columns in DataFrame: {df.columns}")
 # Data preprocessing and visualization
 def preprocess_data(df):
     # Ensure 'Month' column is in datetime format
-    df['Month'] = pd.to_datetime(df['Month'])
+    df['Month'] = pd.to_datetime(df['Month'], format='%Y-%m')
 
     # Extract the month and year as separate columns for regression
     df['Year'] = df['Month'].dt.year
@@ -26,7 +26,7 @@ def preprocess_data(df):
 def predict_rent(df):
     # Extract the features and target variable
     X = df[['Year', 'Month_num']]
-    y = df['Average_Rent']  # Assuming 'Average_Rent' is the column with the rent prices
+    y = df['AvgRent']  # Using 'AvgRent' instead of 'Average_Rent'
 
     # Train the model
     model = LinearRegression()
@@ -53,7 +53,7 @@ st.write(f"Predicted average rent for next month: ${predicted_rent:.2f}")
 
 # Model Evaluation
 X = processed_df[['Year', 'Month_num']]
-y = processed_df['Average_Rent']
+y = processed_df['AvgRent']  # Using 'AvgRent' here as well
 model = LinearRegression()
 model.fit(X, y)
 
@@ -70,7 +70,7 @@ st.write(f"R² Score: {r2:.2f}")
 
 # Plot the trends using Seaborn
 plt.figure(figsize=(10, 6))
-sns.lineplot(x=processed_df['Month'], y=processed_df['Average_Rent'])
+sns.lineplot(x=processed_df['Month'], y=processed_df['AvgRent'])
 plt.title("Rent Price Trend Over Time")
 plt.xlabel("Month")
 plt.ylabel("Average Rent")
