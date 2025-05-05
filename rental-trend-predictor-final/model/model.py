@@ -1,14 +1,15 @@
-import pandas as pd
+from sklearn.linear_model import LinearRegression
 
-def prepare_data(df):
-    # Convert 'Month' to datetime if not already done
-    df['Month'] = pd.to_datetime(df['Month'], format='%Y-%m')
+def train_model(X, y):
+    # Train a linear regression model
+    model = LinearRegression()
+    model.fit(X, y)
+    return model
 
-    # Extract year and month number for prediction
-    df['Year'] = df['Month'].dt.year
-    df['MonthNumber'] = df['Month'].dt.month
+def predict_next_month(model, X):
+    # Predict the next month's rent
+    # Assuming the latest month and year data is available
+    last_month = X.iloc[-1]
+    next_month_features = [[last_month['Year'], last_month['MonthNumber'] + 1]]
     
-    X = df[['Year', 'MonthNumber']]
-    y = df['AvgRent']  # 'AvgRent' as per the CSV column name
-
-    return df, X, y
+    return model.predict(next_month_features)[0]
