@@ -1,12 +1,15 @@
-import pandas as pd
-from sklearn.preprocessing import LabelEncoder
+from sklearn.linear_model import LinearRegression
 
-def prepare_data(df):
-    df['Month'] = pd.to_datetime(df['Month'])
-    df.sort_values(by=['City', 'Month'], inplace=True)
-    df['MonthNumber'] = df['Month'].dt.month + (df['Month'].dt.year - df['Month'].dt.year.min()) * 12
-    le = LabelEncoder()
-    df['CityEncoded'] = le.fit_transform(df['City'])
-    X = df[['MonthNumber', 'CityEncoded']]
-    y = df['AvgRent']
-    return df, X, y
+def train_model(X, y):
+    # Train a linear regression model
+    model = LinearRegression()
+    model.fit(X, y)
+    return model
+
+def predict_next_month(model, X):
+    # Predict the next month's rent
+    # Assuming the latest month and year data is available
+    last_month = X.iloc[-1]
+    next_month_features = [[last_month['Year'], last_month['MonthNumber'] + 1]]
+    
+    return model.predict(next_month_features)[0]
